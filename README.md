@@ -15,8 +15,8 @@ To use the Julia functions
 
 To design a minimum phase spectrum
 ```
-s=randn(1024,1) + im*randn(1024);
-s_minphase = mps(s)
+s = randn(1024,1) + im*randn(1024);
+s_minphase = mps(s);
 ```
 
 ### Installing
@@ -29,16 +29,15 @@ To run the tests, the required software is
 * Julia ( >= 0.6 )
 * mexjulia
 
-mexjulia must be installed and configured in MATLAB.  
-Please see [mexjulia](https://github.com/twadleigh/mexjulia) for instructions. 
+mexjulia must be installed and configured in MATLAB. Please see [mexjulia](https://github.com/twadleigh/mexjulia) for instructions. 
 
 Via the MATLAB terminal:
-* Add path to mex julia, wherever it is located on your machine
-  * `addpath('C:\path\to\mexjulia')
-* Change directory to a particular JOS3.jl book
-  * 'cd('C:\path\to\JOS3.jl')
-* Run runtests.m
-  * 'run('runtests.m')
+1. Add path to mexjulia, wherever it is located on your machine
+    * `addpath('C:\path\to\mexjulia')`
+2. Change directory to a particular JOS3.jl book
+    * `cd('C:\path\to\JOS3.jl\filters')`
+3. Run runtests.m
+    * `run('runtests.m')`
 
 This runs a test for each function that compares the original copy/pasted MATLAB function
 and the translated Julia function. 
