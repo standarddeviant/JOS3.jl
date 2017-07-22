@@ -1,3 +1,4 @@
+% Obtained from https://ccrma.stanford.edu/~jos/filters/Matlab_listing_clipdb_m.html
 function [clipped] = clipdb(s,cutoff)
 % [clipped] = clipdb(s,cutoff)
 
