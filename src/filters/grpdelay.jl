@@ -5,17 +5,20 @@ function grpdelay(b,a=1,nfft=512,whole="",Fs=0)
   # even if scalar is passed in
   b = [b...] # 'splatting', unfortunate but correct as of 0.6
   a = [a...] # 'splatting', unfortunate but correct as of 0.6
-  nfft = Int(nfft)
-
-  w = 2*pi*collect(0:nfft-1)/nfft;
-  if Fs>0; w = Fs*w/(2*pi); end
-
   oa = length(a)-1;         # order of a(z)
   oc = oa + length(b)-1;    # order of c(z)
   c = conv(b,flipdim(a,1)); # c(z) = b(z)*a(1/z)*z^(-oa)
-  cr = c .* collect(0:oc);    # derivative of c wrt 1/z
-  num = fft( cat(1,cr,zeros(nfft-length(cr))) ,1); # nfft not supported :-\
-  den = fft( cat(1,c ,zeros(nfft-length(c ))) ,1); # nfft not supported :-\
+  cr = c .* collect(0:oc);  # derivative of c wrt 1/z
+
+  # Update nfft if necessary, after looking at a and b
+  nfft = length(cr)>nfft ? nextpow2(length(cr)) : nfft;
+  w = 2*pi*collect(0:nfft-1)/nfft;
+  if Fs>0; w = Fs*w/(2*pi); end
+
+  cr = cat(1,cr,zeros(nfft-length(cr))); # zero pad for fft
+  c  = cat(1,c ,zeros(nfft-length(c ))); # zero pad for fft
+  num = fft(cr,1); # nfft not supported :-\
+  den = fft(c ,1); # nfft not supported :-\
   minmag = 10*eps();
   polebins = find(abs(den) .< minmag);
   for b=polebins
