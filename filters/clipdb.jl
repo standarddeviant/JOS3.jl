@@ -5,14 +5,13 @@ function clipdb(s,cutoff)
   # of s is not more than 100dB below its maximum magnitude.
   # If s is zero, nothing is done.
 
-  clipped = s;
   as = abs(s);
   mas = maximum(as);
   if mas==0; return; end
   if cutoff >= 0; return; end
 
   thresh = mas*10^(cutoff/20); # db to linear
-  clipped = s;
+  clipped = float(s);
   clipped[ as .< thresh ] = thresh;
   return clipped;
 end
