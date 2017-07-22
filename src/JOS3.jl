@@ -11,7 +11,7 @@ module JOS3
            hessian,
            jacobian,
            second_derivative
-    include("filters/clipdb.jl")
-    include("filters/fold.jl")
-    include("filters/mps.jl")    
+    include("./filters/clipdb.jl")
+    include("./filters/fold.jl")
+    include("./filters/mps.jl")    
 end
