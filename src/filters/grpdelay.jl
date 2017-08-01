@@ -37,5 +37,5 @@ function grpdelay(b,a=1,nfft=512,whole="",Fs=0)
   w = reshape(vec(w),(length(w),1)); # Matlab returns column vectors
   gd = reshape(vec(gd),(length(gd),1)); # Matlab returns column vectors
 
-  return (gd,w)
+  return gd,w
 end

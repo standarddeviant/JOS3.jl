@@ -1,4 +1,5 @@
 % Obtained from https://ccrma.stanford.edu/~jos/filters/Group_Delay_Computation_grpdelay_m.html
+% Modified by Dave Crist, 2017-07-22
 function [gd,w] = grpdelay(b,a,nfft,whole,Fs) 
 
   if (nargin<1 || nargin>5)
@@ -17,15 +18,19 @@ function [gd,w] = grpdelay(b,a,nfft,whole,Fs)
   if nargin<2, a=1; end
   end
   
+  szb=size(b); sza=size(a);
+  if szb(1) > szb(2); b=b.'; end
+  if sza(1) > sza(2); a=a.'; end
+  
   if strcmp(whole,'whole')==0, nfft = 2*nfft; end
 
   w = 2*pi*[0:nfft-1]/nfft;
   if Fs>0, w = Fs*w/(2*pi); end
 
-  oa = length(a)-1;             % order of a(z)
-  oc = oa + length(b)-1;        % order of c(z)
-  c = conv(b,fliplr(a));	% c(z) = b(z)*a(1/z)*z^(-oa)
-  cr = c.*[0:oc];               % derivative of c wrt 1/z 
+  oa = length(a)-1;       % order of a(z)
+  oc = oa + length(b)-1;  % order of c(z)
+  c = conv(b,fliplr(a));  % c(z) = b(z)*a(1/z)*z^(-oa)
+  cr = c.*[0:oc];   % derivative of c wrt 1/z 
   num = fft(cr,nfft);
   den = fft(c,nfft);
   minmag = 10*eps;
