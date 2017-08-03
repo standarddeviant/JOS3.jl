@@ -43,7 +43,7 @@ function varargout = jl_mat_call(jlfile, jlevalstr, jlouts, jlins)
     fclose(jls);
     
     % run julia script
-    jlevalcmd = sprintf('julia --depwarn=no --load "%s"',jlspath)
+    jlevalcmd = sprintf('julia --depwarn=no --load "%s"',jlspath);
     system(jlevalcmd);
     
     % load output mat file to varargout

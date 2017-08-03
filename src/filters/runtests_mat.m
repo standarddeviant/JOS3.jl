@@ -51,15 +51,16 @@ N=1024; b=randn(N,1); a=1; nfft=1024; whole='whole'; Fs=48000;
 [jlgd, jlw] = jl_mat_call(jlfile, 'jlgd,jlw=grpdelay(b,a,nfft,whole,Fs)', ...
     {'jlgd','jlw'}, {'b','a','nfft','whole','Fs'});
 compare_mout_jlout(mgd,jlgd,tol,[fstr,'-1-gd']);
-compare_mout_jlout(mw ,jlw ,tol,[fstr,'-1-w'],cleartestvars);
+compare_mout_jlout(mw ,jlw ,tol,[fstr,'-1-w']);
 
+%{
 % grpdelay (2)
 N=1024; b=randn(N,1);
 [mgd,mw]=mfh(b); 
 [jlgd, jlw] = jl_mat_call(jlfile, 'jlgd,jlw=grpdelay(b)', {'jlgd','jlw'}, {'b'});
 compare_mout_jlout(mgd,jlgd,tol,[fstr,'-2-gd']);
 compare_mout_jlout(mw ,jlw ,tol,[fstr,'-2-w'],cleartestvars);
-
+%}
 
 
 
