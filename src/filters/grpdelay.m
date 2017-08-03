@@ -43,7 +43,6 @@ function [gd,w] = grpdelay(b,a,nfft,whole,Fs)
 
   if strcmp(whole,'whole')==0
     ns = nfft/2; % Matlab convention - should be nfft/2 + 1
-    disp(ns)
     gd = gd(1:ns);
     w = w(1:ns);
   end

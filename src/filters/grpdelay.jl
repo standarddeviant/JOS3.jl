@@ -11,9 +11,7 @@ function grpdelay(b,a=1,nfft=512,whole="",Fs=0)
   cr = c .* collect(0:oc);  # derivative of c wrt 1/z
 
   # Update nfft if necessary, after looking at a and b
-  @show nfft
-  nfft = length(cr)>nfft ? nextpow2(length(cr)) : nfft;
-  @show nfft
+  if length(cr)>nfft; nfft = nextpow2(length(cr)); end;
   w = 2*pi*collect(0:nfft-1)/nfft;
   if Fs>0; w = Fs*w/(2*pi); end
 
@@ -24,7 +22,7 @@ function grpdelay(b,a=1,nfft=512,whole="",Fs=0)
   minmag = 10*eps();
   polebins = find(abs(den) .< minmag);
   for b=polebins
-    disp("*** grpdelay: group delay singular! setting to 0");
+    println("*** grpdelay: group delay singular! setting to 0");
     num[b] = 0;
     den[b] = 1;
   end
@@ -32,7 +30,6 @@ function grpdelay(b,a=1,nfft=512,whole="",Fs=0)
 
   if whole != "whole"
     ns = Int(nfft/2); # Matlab convention - should be nfft/2 + 1
-    @show ns
     gd = gd[1:ns];
     w = w[1:ns];
   end

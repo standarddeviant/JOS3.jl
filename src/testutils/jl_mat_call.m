@@ -4,7 +4,7 @@ function varargout = jl_mat_call(jlfile, jlevalstr, jlouts, jlins)
     
     % load matlab input variables as ra files for julia input
     for jli = jlins
-        tmpval = evalin('base',char(jli));
+        tmpval = evalin('base',char(jli)); % grab value from base
         eval([ char(jli) , ' = tmpval;']);
     end
     if ~isempty(jlins)
@@ -23,13 +23,13 @@ function varargout = jl_mat_call(jlfile, jlevalstr, jlouts, jlins)
     
     % (2) load mat file to julia env
     if ~isempty(jlins)
-        fprintf(jls, '_din = matread(raw"%s")\n', fullfile(tdir, 'input.mat'));
-        fprintf(jls, '%s\n','for k in keys(_din); println(eval(parse("$(k) = _din[\"$(k)\"]"))); end;');
+        fprintf(jls, '_din = matread(raw"%s");\n', fullfile(tdir, 'input.mat'));
+        fprintf(jls, '%s\n','for k in keys(_din); eval(parse("$(k) = _din[\"$(k)\"]")); end;');
         %fprintf(jls, 'for k in keys(_din); @eval ($(Symbol(k)) = _din[k]); end;\n');
     end
 
     % (3) call eval str
-    fprintf(jls, '%s\n', jlevalstr);
+    fprintf(jls, '%s;\n', jlevalstr);
 
     % (4) write julia output variables as mat file for matlab output
     fprintf(jls, '_dout = Dict()\n');
