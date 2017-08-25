@@ -8,7 +8,7 @@ function varargout = jl_mat_call(jlfile, jlevalstr, jlouts, jlins)
         eval([ char(jli) , ' = tmpval;']);
     end
     if ~isempty(jlins)
-        save(fullfile(tdir,'input.mat'), jlins{:}, '-v7.3');
+        save(fullfile(tdir,'input.mat'), jlins{:}, '-v7');
     end
     
     % (0) construct julia script to execute function call
@@ -56,5 +56,8 @@ function varargout = jl_mat_call(jlfile, jlevalstr, jlouts, jlins)
     end
     
     % clean up temp directory
+    if exist('confirm_recursive_rmdir')
+        confirm_recursive_rmdir(0)
+    end
     rmdir(tdir,'s'); % s option is like 'rm -rf', but docs don't say what s means...
 end % function
