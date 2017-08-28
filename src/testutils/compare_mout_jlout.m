@@ -6,4 +6,7 @@ function compare_mout_jlout(mout,jlout,tol,fstr,cleartestvars)
         fprintf('PASSED: %s\n',fstr);
     end
     eval(cleartestvars);
+    if exist('fflush')
+        fflush(stdout);
+    end
 end
