@@ -17,8 +17,10 @@ tol=1e-9;
 cleartestvars = strcat( 'clear(',                                        ...
 '''mfh'',''N'',''s'',''cutoff'',''b'',''a'',''nfft'',''whole'',''Fs''',  ...
 '''mgd'',''mw'',''jlgd'',''jlw''',                                       ...
+'''mr'',''mp'',''mf'',''me'' ''jr'',''jp'',''jf'',''je''',               ...
 ');');
 
+%{
 % clipdb
 fstr='clipdb'; jlfile=fullfile(thispath,'filters.jl'); mfh=str2func(fstr);
 N=16; s=randn(N,1); cutoff=-15;
@@ -58,6 +60,12 @@ N=1024; b=randn(N,1);
 [jlgd, jlw] = jl_mat_call(jlfile, 'jlgd,jlw=grpdelay(b)', {'jlgd','jlw'}, {'b'});
 compare_mout_jlout(mgd,jlgd,tol,[fstr,'-2-gd']);
 compare_mout_jlout(mw ,jlw ,tol,[fstr,'-2-w'],cleartestvars);
+%}
 
-
+% residued
+fstr='residued'; jlfile=fullfile(thispath,'filters.jl'); mfh=str2func(fstr);
+N=1024; b=randn(N,1); a=randn(N/2,1); tol=1e-9;
+[mr, mp, mf, me] = mfh(b,a,tol);
+[jr, jp, jf, je] = jl_mat_call(jlfile, 'jr,jp,jf,je=residued(b,a,tol)', ...
+    {'jr', 'jp', 'jf', 'je'}, {'b','a','tol'})
 

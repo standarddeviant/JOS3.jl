@@ -8,7 +8,7 @@ nb = length(NUM);
 na = length(DEN);
 f = [];
 if na<=nb
-  f = filter(NUM,DEN,[1,zeros(nb-na)]);
+  f = filter(NUM,DEN,[1,zeros(1,nb-na)]);
   NUM = NUM - conv(DEN,f);
   NUM = NUM(nb-na+2:end);
 end
