@@ -26,16 +26,19 @@ function residue(pn::Poly, pd::Poly)
     # calculate degree and roots of denominator
     degn = degree(pn)
     degd = degree(pd)
-    rootsd = sort(countmap(roots(pd)))
 
     # Check if numerator degree >= denominator degree
+    # If degn >= degd, divide out polynomial GCD, and continue with remainder
     if degn >= degd
         pq, pr = divrem(pn, pd)
     else
         pq=Poly(0); pr=copy(pn)
     end
 
-    # Work with with pr/pd
+    # get roots, and counts of repeated roots as keys and values of a
+    # map or dictionary object
+    rootsd = sort(roots(pd))
+    # rootsd_map = countmap(rootsd_all)
 
     # Loop over denominator roots
     # rD = 'current' root of denominator we're dealing with
@@ -45,13 +48,20 @@ function residue(pn::Poly, pd::Poly)
     # (Numerator-Poly) = A*abc_poly[1] + B*abc_poly[2] + C*abc_poly[3] + ...
     abc_polys = [] #[Poly(0) for idx = 1:length(rootsd)]
     for rD = unique(rootsd)
-        #for 
-        # FIXME, handle duplicated roots
-        push!(abc_polys, 
-            prod( [Poly([-rL,1]) for rL in rootsd if rL!=rd] ))
+        # Account for other unique roots
+        abc_poly = prod( [Poly([-rL,1]) for rL in rootsd if rL!=rD] )            
+        push!(abc_polys, abc_poly)
+
+        # Account for repeated roots
+        rD_reps = sum( rootsd .== rD)
+        # the denominator has rD_reps occurrences of this root
+        for rep = 2:rD_reps
+            abc_poly *= Poly([-rD,1])
+            push!(abc_polys, abc_poly)
+        end
     end
 
     # This *should* set up a nice set of linear equations for 
     # coefficients of NumCoef * x^pow = (A+B+C+...) * x^pow
 
-end # residue
+end # residue function
