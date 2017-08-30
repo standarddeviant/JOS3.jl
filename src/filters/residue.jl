@@ -19,24 +19,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 =#
 
-function uniquetol_map(itr,tol=1e-6)
-    # utVals = Array{Number}(0)
-    ut_vals_map = Dict()
-    ut_idxs_map = Dict()
+function uniquetol_dict(itr,tol=1e-6)
+    ut_vals_dict = Dict()
+    ut_idxs_dict = Dict()
     if length(itr) == 0
-        return utMap
+        return ut_vals_dict, ut_idxs_dict
     end
 
     _itr = copy(itr)
     while(length(_itr) > 0)
         idxs = find(abs.(itr - _itr[1]) .< tol)
         utval = mean(itr[idxs])
-        ut_vals_map[ utval ] = itr[idxs]
-        ut_idxs_map[ utval ] =     idxs
+        ut_vals_dict[ utval ] = itr[idxs]
+        ut_idxs_dict[ utval ] =     idxs
         deleteat!(_itr,find(abs.(_itr - _itr[1]) .< tol))
     end
     
-    return ut_vals_map, ut_idxs_map
+    return ut_vals_dict, ut_idxs_dict
 end
 
 # residue.jl
@@ -59,7 +58,7 @@ function residue(pn::Poly, pd::Poly, root_tol=1e-6)
     rootsd = sort(roots(pd))
     # rd_ut_idxs = groups of idxs in to rootsd, 
     #     that represent numerically close roots
-    rd_ut_vals, rd_ut_idxs = uniquetol_map(rootsd,1e-6)
+    rd_ut_vals, rd_ut_idxs = uniquetol_dict(rootsd,1e-6)
 
     # Loop over denominator roots, in groups, determined by uniquetol_map
     # uniquetol_map is used to find roots that are numerically close but uneqal
@@ -79,16 +78,18 @@ function residue(pn::Poly, pd::Poly, root_tol=1e-6)
         # Account for repeated roots numerically close to to rD
         for repidx = 2:length(rdidxs) # start at 2 to ignore non-repeated roots
             rD = rootsd[rdidxs[repidx]]
-            # print("rD=$rD , (BEFORE) rep=$repidx: $abc_poly\n")            
             abc_poly *= Poly([-rD,1])
-            # print("rD=$rD , rep=$repidx: $abc_poly\n")
             push!(abc_polys, abc_poly)
         end
     end
 
-    # This *should* set up a nice set of linear equations for 
-    # coefficients of NumCoef * x^pow = (A+B+C+...) * x^pow
-    return abc_polys, rootsd
+    # With abc_polys, set up a nice set of linear equations for 
+    # coefficients of NumeratorCoef_i * x^pow = (A+B+C+...) * x^pow
+
+    A = [ p[pidx] for pidx=0:(degree(pd)-1), p in abc_polys ]
+    b = coeffs(pr)
+
+    return A \ b, rootsd
 
 end # residue function
 
