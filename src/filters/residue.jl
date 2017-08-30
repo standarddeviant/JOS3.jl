@@ -1,4 +1,4 @@
-#= Copyright (c) <year> <copyright holders>
+#= Copyright (c) 2017 Dave Crist
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,12 +20,13 @@ SOFTWARE.
 =#
 
 # residue.jl
+using Polynomials
+using StatsBase
 function residue(pn::Poly, pd::Poly)
     # calculate degree and roots of denominator
     degn = degree(pn)
     degd = degree(pd)
-    rootsd = roots(pd)
-    # FIXME, handle duplicated roots
+    rootsd = sort(countmap(roots(pd)))
 
     # Check if numerator degree >= denominator degree
     if degn >= degd
@@ -42,8 +43,10 @@ function residue(pn::Poly, pd::Poly)
     # abc_polys are the polynomials multiplying A, B, C, etc.
     # in the form
     # (Numerator-Poly) = A*abc_poly[1] + B*abc_poly[2] + C*abc_poly[3] + ...
-    abc_polys = []#[Poly(0) for idx = 1:length(rootsd)]
-    for rD = rootsd
+    abc_polys = [] #[Poly(0) for idx = 1:length(rootsd)]
+    for rD = unique(rootsd)
+        #for 
+        # FIXME, handle duplicated roots
         push!(abc_polys, 
             prod( [Poly([-rL,1]) for rL in rootsd if rL!=rd] ))
     end
