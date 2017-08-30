@@ -48,14 +48,14 @@ function residue(pn::Poly, pd::Poly)
     # (Numerator-Poly) = A*abc_poly[1] + B*abc_poly[2] + C*abc_poly[3] + ...
     abc_polys = [] #[Poly(0) for idx = 1:length(rootsd)]
     for rD = unique(rootsd)
-        # Account for other unique roots
+        # Account for all other-valued roots
         abc_poly = prod( [Poly([-rL,1]) for rL in rootsd if rL!=rD] )            
         push!(abc_polys, abc_poly)
 
-        # Account for repeated roots
+        # Account for repeated roots equal to rD
         rD_reps = sum( rootsd .== rD)
         # the denominator has rD_reps occurrences of this root
-        for rep = 2:rD_reps
+        for rep = 2:rD_reps # start at 2 to ignore non-repeated roots
             abc_poly *= Poly([-rD,1])
             push!(abc_polys, abc_poly)
         end
